@@ -175,6 +175,7 @@ jobs:
             ${{ env.img }} \
             bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
             source .env/bin/activate && \
+            yum install python-devel && \
             if [[ ${{ matrix.impl }} == cpython ]] ; then
               echo "LMDB_FORCE_CPYTHON=1" ;
             else
