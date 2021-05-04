@@ -205,7 +205,7 @@ jobs:
       with:
         name: "ubuntu-${{ matrix.pyver }}-\
           ${{ matrix.impl }}-${{ matrix.purity }}.whl"
-        path: dist/lmdb-*.wh
+        path: dist/lmdb-*.whl
     #- name: Get version
      # if: >-
       #  matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
