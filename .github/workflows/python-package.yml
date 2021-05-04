@@ -200,64 +200,60 @@ jobs:
             ls dist && \
             uname -m && \
             deactivate'
- 
-      - name: Save wheel
-        uses: actions/upload-artifact@v2
-        with:
-          name: "ubuntu-${{ matrix.pyver }}-\
-            ${{ matrix.impl }}-${{ matrix.purity }}.whl"
-          path: dist/lmdb-*.whl
-
-      - name: Get version
-        if: >-
-          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-        run: |
-          python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
-      - name: Save version
-        if: >-
-          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-        uses: actions/upload-artifact@v2
-        with:
-          path: vers.txt
-          name: vers.txt
-          
-      - name: Save source
-        # We only need a single target to upload the source
-        # (all targets have the same source)
-        if: >-
-          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-        uses: actions/upload-artifact@v2
-        with:
-          path: dist/lmdb*.tar.gz
-          name: source
-
-      - name: Build manylinux wheel
-        if: >-
-          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-        uses: RalfG/python-wheels-manylinux-build@v0.3.3
-        with:
-          python-versions: >-
-              cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39
-          build-requirements: 'patch-ng'
-
-      - name: What do we have
-        run: ls dist
-
-      - name: Save manylinux wheel
-        # We only need a single target to upload the source
-        # (all targets have the same source)
-        if: >-
-          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-        uses: actions/upload-artifact@v2
-        with:
-          path: dist/lmdb*manylinux*.whl
-          name: manylinux
-
+    - name: Save wheel
+      uses: actions/upload-artifact@v2
+      with:
+        name: "ubuntu-${{ matrix.pyver }}-\
+          ${{ matrix.impl }}-${{ matrix.purity }}.whl"
+        path: dist/lmdb-*.wh
+    - name: Get version
+      if: >-
+        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
+        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+      run: |
+        python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
+    - name: Save version
+      if: >-
+        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
+        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+      uses: actions/upload-artifact@v2
+      with:
+        path: vers.txt
+        name: vers.txt
+        
+    - name: Save source
+      # We only need a single target to upload the source
+      # (all targets have the same source)
+      if: >-
+        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
+        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+      uses: actions/upload-artifact@v2
+      with:
+        path: dist/lmdb*.tar.gz
+        name: source
+        
+    - name: Build manylinux wheel
+      if: >-
+        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
+        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+      uses: RalfG/python-wheels-manylinux-build@v0.3.3
+      with:
+        python-versions: >-
+            cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39
+        build-requirements: 'patch-
+    - name: What do we have
+      run: ls dis
+    - name: Save manylinux wheel
+      # We only need a single target to upload the source
+      # (all targets have the same source)
+      if: >-
+        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
+        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+      uses: actions/upload-artifact@v2
+      with:
+        path: dist/lmdb*manylinux*.whl
+        name: manylinux
+        
   publish:
     needs: build
     # N.B. the host running twine to upload is distinct from the target image
