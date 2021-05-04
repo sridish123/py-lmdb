@@ -173,5 +173,5 @@ jobs:
             ${{ env.img }} \
             bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
             source .env/bin/activate && \
-uname -m && \
-deactivate'
+            uname -m && \
+            deactivate'
