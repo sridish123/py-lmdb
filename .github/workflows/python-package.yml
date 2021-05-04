@@ -243,12 +243,13 @@ jobs:
         build-requirements: 'patch-
     - name: What do we have
       run: ls dis
+    
     - name: Save manylinux wheel
       # We only need a single target to upload the source
       # (all targets have the same source)
       if: >-
-        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+          matrix.python-version == '3.9' && runner.os == 'Linux' &&
+          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
       uses: actions/upload-artifact@v2
       with:
         path: dist/lmdb*manylinux*.whl
