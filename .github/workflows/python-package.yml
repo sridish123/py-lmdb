@@ -175,7 +175,7 @@ jobs:
             ${{ env.img }} \
             bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
             source .env/bin/activate && \
-            yum install python-devel && \
+            yum install -y python-devel && \
             if [[ ${{ matrix.impl }} == cpython ]] ; then
               echo "LMDB_FORCE_CPYTHON=1" ;
             else
@@ -185,7 +185,7 @@ jobs:
               echo "LMDB_PURE=1" ;
             elif [[ ${{ matrix.purity }} == system ]] ; then
             	echo "LMDB_FORCE_SYSTEM=1" ;
-            	sudo yum install libdb-devel;
+            	sudo yum install -y libdb-devel;
             fi && \
             echo "Linux: Envs are cpython=$LMDB_FORCE_CPYTHON
             	cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM" && \
