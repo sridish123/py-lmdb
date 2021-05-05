@@ -214,7 +214,6 @@ jobs:
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
             ${{ env.img }} \
             bash -exc '\
-            source .env/bin/activate && \
             python -m pip install cffi && \
             python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt && \
             deactivate'
