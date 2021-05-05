@@ -197,7 +197,7 @@ jobs:
             python setup.py develop sdist bdist_wheel && \
             ls dist && \
             pytest && \
-            ls dist && \
+            python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt && \
             uname -m && \
             deactivate'
     - name: Save wheel
@@ -206,17 +206,7 @@ jobs:
         name: "ubuntu-${{ matrix.pyver }}-\
           ${{ matrix.impl }}-${{ matrix.purity }}.whl"
         path: dist/lmdb-*.whl
-    - name: Get version
-      if: >-
-        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-      run: |
-            docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-            ${{ env.img }} \
-            bash -exc '\
-            python -m pip install cffi && \
-            python -c 'import lmdb; print (lmdb.__version__, end="")' > vers.txt && \
-            deactivate'
+
     - name: Save version
       if: >-
         matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
