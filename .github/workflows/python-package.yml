@@ -197,7 +197,9 @@ jobs:
             python setup.py develop sdist bdist_wheel && \
             ls dist && \
             pytest && \
-            python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt && \
+            if [[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' ]] ; then
+              python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt;
+            fi && \
             uname -m && \
             deactivate'
     - name: Save wheel
