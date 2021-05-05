@@ -215,7 +215,7 @@ jobs:
             ${{ env.img }} \
             bash -exc '\
             python -m pip install cffi && \
-            python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt && \
+            python -c 'import lmdb; print (lmdb.__version__, end="")' > vers.txt && \
             deactivate'
     - name: Save version
       if: >-
