@@ -211,7 +211,7 @@ jobs:
         matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
         matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
       run: |
-        python -m pip install cffi
+        #python -m pip install cffi
         #sudo apt-get install liblmdb-dev
         python3 -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
     - name: Save version
