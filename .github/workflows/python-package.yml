@@ -215,6 +215,7 @@ jobs:
             ${{ env.img }} \
             bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
             source .env/bin/activate && \
+            python -m pip install cffi && \
             python3 -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt && \
             deactivate'
     - name: Save version
