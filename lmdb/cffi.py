@@ -569,6 +569,7 @@ def version(subpatch=False):
             itself (0 representing no patches).
 
     """
+    print ("********************************************")
     if subpatch:
         return (_lib.MDB_VERSION_MAJOR,
                 _lib.MDB_VERSION_MINOR,
