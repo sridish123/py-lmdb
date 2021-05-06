@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # Copyright 2013-2021 The py-lmdb authors, all rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
