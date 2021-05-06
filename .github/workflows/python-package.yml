@@ -187,8 +187,8 @@ jobs:
             	echo LMDB_FORCE_SYSTEM=1
             	sudo yum install -y libdb-devel;
             fi && \
-            echo Linux: Envs are cpython=$LMDB_FORCE_CPYTHON
-            	cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM && \
+            echo 'Linux: Envs are cpython='$LMDB_FORCE_CPYTHON
+            	'cffi='$LMDB_FORCE_CFFI 'pure='$LMDB_PURE 'system='$LMDB_FORCE_SYSTEM && \
             python -m pip install wheel && \
             python -m pip install cffi && \
             python -m pip install flake8 pytest patch-ng && \
