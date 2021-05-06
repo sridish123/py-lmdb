@@ -62,7 +62,6 @@ jobs:
             echo "LMDB_FORCE_SYSTEM=1" >> $GITHUB_ENV;
             sudo apt-get install liblmdb-dev;
           fi
-
       - name: Install dependencies
         run: |
           echo "Linux: Envs are cpython=$LMDB_FORCE_CPYTHON
@@ -90,7 +89,6 @@ jobs:
           echo "Envs are cpython=$LMDB_FORCE_CPYTHON cffi=$LMDB_FORCE_CFFI
             pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM"
           pytest
-
       - name: Save wheel
         uses: actions/upload-artifact@v2
         with:
@@ -104,7 +102,6 @@ jobs:
           matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
         run: |
           python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
-
       - name: Save version
         if: >-
           matrix.python-version == '3.9' && runner.os == 'Linux' &&
@@ -120,7 +117,6 @@ jobs:
         if: >-
           matrix.python-version == '3.9' && runner.os == 'Linux' &&
           matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-
         uses: actions/upload-artifact@v2
         with:
           path: dist/lmdb*.tar.gz
@@ -151,111 +147,77 @@ jobs:
           name: manylinux
           
   test-aarch64:
-    name: "Test ${{ matrix.pyver }} aarch64"
+    name: "${{ matrix.PYTHON.VERSION }} manylinux2014-aarch64"
+    runs-on: ubuntu-latest
     strategy:
-      matrix:
-        pyver: [cp36-cp36m, cp37-cp37m, cp38-cp38, cp39-cp39]
-        impl: [cpython, cffi]
-        purity: [pure, with-pylmdb-mods]
-        arch: [aarch64]
-      fail-fast: false
-    runs-on: ubuntu-18.04
-    env:
-      py: /opt/python/${{ matrix.pyver }}/bin/python
-      img: quay.io/pypa/manylinux2014_${{ matrix.arch }}
+       matrix:
+        PYTHON:
+          - {VERSION: "cp36-cp36m", "cp37-cp37m" , "cp38-cp38" , "cp39-cp39"}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2    
-    - name: Set up QEMU
-      id: qemu
-      uses: docker/setup-qemu-action@v1
-    - name: Install dependencies
-      run: |
-            docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
-            ${{ env.img }} \
-            bash -exc "${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
-            source .env/bin/activate && \
-            yum install -y libffi-devel && \
-            if [[ ${{ matrix.impl }} == cpython ]] ; then
-              echo LMDB_FORCE_CPYTHON=1
-            else
-            	echo LMDB_FORCE_CFFI=1
-            fi && \
-            if [[ ${{ matrix.purity }} == pure ]] ; then
-              echo "LMDB_PURE=1"
-            elif [[ ${{ matrix.purity }} == system ]] ; then
-            	echo LMDB_FORCE_SYSTEM=1
-            	sudo yum install -y libdb-devel;
-            fi && \
-            echo 'Linux: Envs are cpython='$LMDB_FORCE_CPYTHON
-            	'cffi='$LMDB_FORCE_CFFI 'pure='$LMDB_PURE 'system='$LMDB_FORCE_SYSTEM && \
-            python -m pip install wheel && \
-            python -m pip install cffi && \
-            python -m pip install flake8 pytest patch-ng && \
-            python setup.py develop sdist bdist_wheel && \
-            ls dist && \
-            if [[ matrix.python-version != '3.4' && matrix.python-version != '3.6' && matrix.python-version != '3.8' ]] ; then
-              echo "Envs are cpython=$LMDB_FORCE_CPYTHON cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM";
-              pytest;
-            fi && \
-            if [[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' ]] ; then
-              echo "###########################################################";
-              python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
-              #python -c \"import lmdb; print(lmdb.__version__, end="")\" > vers.txt;
-            fi && \
-            uname -m && \
-            deactivate"
-    - name: Save wheel
-      uses: actions/upload-artifact@v2
-      with:
-        name: "ubuntu-${{ matrix.pyver }}-\
-          ${{ matrix.impl }}-${{ matrix.purity }}.whl"
-        path: dist/lmdb-*.whl
-
-    - name: Save version
-      if: >-
-        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-      uses: actions/upload-artifact@v2
-      with:
-        path: vers.txt
-        name: vers.txt
-        
-    - name: Save source
-      # We only need a single target to upload the source
-      # (all targets have the same source)
-      if: >-
-        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-      uses: actions/upload-artifact@v2
-      with:
-        path: dist/lmdb*.tar.gz
-        name: source
-        
-    - name: Build manylinux wheel
-      if: >-
-        matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
-        matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-      uses: RalfG/python-wheels-manylinux-build@v0.3.3
-      with:
-        python-versions: >-
-            cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39
-        build-requirements: 'patch-ng'
-    
-    - name: What do we have
-      run: ls dist
-    
-    - name: Save manylinux wheel
-      # We only need a single target to upload the source
-      # (all targets have the same source)
-      if: >-
-          matrix.python-version == '3.9' && runner.os == 'Linux' &&
+      - uses: actions/checkout@v2
+      - run: |
+          docker run --rm --privileged hypriot/qemu-register
+      - uses: docker://quay.io/pypa/manylinux2014_aarch64
+        # The weird pip cache nonsense below is due to docker ownership issues. We want
+        # a cache because otherwise we end up building cffi twice.
+        with:
+          args: |
+              bash -c "set -xe;
+              mkdir -p /github/home/.cache/pip;
+              chown -R $(whoami) /github/home/.cache;
+              /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -m venv .venv;
+              .venv/bin/pip install -U pip wheel cffi six;
+              if [[ ${{ matrix.impl }} == cpython ]]; then
+                echo "LMDB_FORCE_CPYTHON=1"
+              else
+                echo "LMDB_FORCE_CFFI=1"
+              fi
+              if [[ ${{ matrix.purity }} == pure ]]; then
+                echo \"LMDB_PURE=1\"\;
+              elif [[ ${{ matrix.purity }} == system ]]; then
+                echo "LMDB_FORCE_SYSTEM=1"
+              fi
+              echo \"Linux: Envs are cpython=$LMDB_FORCE_CPYTHON
+                cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM\";
+              echo \"Windows: Envs are cpython=$Env:LMDB_FORCE_CPYTHON
+                cffi=$Env:LMDB_FORCE_CFFI pure=$Env:LMDB_PURE system=$Env:LMDB_FORCE_SYSTEM\";
+              .venv/bin/pip install flake8 pytest patch-ng;
+              /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python setup.py develop sdist bdist_wheel;
+              ls dist;
+              if [[ matrix.python-version != '3.4' && matrix.python-version != '3.6' && matrix.python-version != '3.8' ]] ; then
+                echo "Envs are cpython=$LMDB_FORCE_CPYTHON cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM";
+                pytest;
+              fi;
+              if [[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' ]] ; then
+                /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -c \"import lmdb; print(lmdb.__version__, end="")' > vers.txt\";
+              fi;"
+      - run: sudo mv dist/lmdb-*.whl vers.txt
+      - uses: actions/upload-artifact@v1
+        with:
+          path: vers.txt
+          name: vers.txt     
+      - if: >-
+          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
           matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
-      uses: actions/upload-artifact@v2
-      with:
-        path: dist/lmdb*manylinux*.whl
-        name: manylinux
-        
+        uses: actions/upload-artifact@v2
+        with:
+          path: dist/lmdb*.tar.gz
+          name: source        
+      - if: >-
+          matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' &&
+          matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+        uses: RalfG/python-wheels-manylinux-build@v0.3.3
+        with:
+          python-versions: >-
+              cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38 cp39-cp39
+          build-requirements: 'patch-ng'
+      - if: >-
+            matrix.python-version == '3.9' && runner.os == 'Linux' &&
+            matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython'
+        uses: actions/upload-artifact@v2
+        with:
+          path: dist/lmdb*manylinux*.whl
+          name: manylinux
   publish:
     needs: build
     # N.B. the host running twine to upload is distinct from the target image
