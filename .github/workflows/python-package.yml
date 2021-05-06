@@ -202,7 +202,9 @@ jobs:
             fi && \
             if [[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' ]] ; then
               echo "###########################################################";
-              python -c \"'import lmdb; print(lmdb.__version__, end="")' > vers.txt\";
+              #python -c \"'import lmdb; print(lmdb.__version__, end="")' > vers.txt\";
+              #"python -c 'import fitz;print(fitz.__doc__)'"
+              python -c 'import lmdb;print(lmdb.__version__)';
             fi && \
             uname -m && \
             deactivate'
