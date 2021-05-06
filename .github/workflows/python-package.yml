@@ -177,20 +177,20 @@ jobs:
             source .env/bin/activate && \
             yum install -y libffi-devel && \
             if [[ ${{ matrix.impl }} == cpython ]] ; then
-              echo "LMDB_FORCE_CPYTHON=1" ;
+              echo \"LMDB_FORCE_CPYTHON=1\" ;
             else
-            	echo "LMDB_FORCE_CFFI=1" ;
+            	echo \"LMDB_FORCE_CFFI=1\" ;
             fi && \
             if [[ ${{ matrix.purity }} == pure ]] ; then
-              echo "LMDB_PURE=1" ;
+              echo \"LMDB_PURE=1\" ;
             elif [[ ${{ matrix.purity }} == system ]] ; then
-            	echo "LMDB_FORCE_SYSTEM=1" ;
+            	echo \"LMDB_FORCE_SYSTEM=1\" ;
             	sudo yum install -y libdb-devel;
             fi && \
-            echo "Linux: Envs are cpython=$LMDB_FORCE_CPYTHON
-            	cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM" && \
-            echo "Windows: Envs are cpython=$Env:LMDB_FORCE_CPYTHON
-            	cffi=$Env:LMDB_FORCE_CFFI pure=$Env:LMDB_PURE system=$Env:LMDB_FORCE_SYSTEM" && \
+            echo \"Linux: Envs are cpython=$LMDB_FORCE_CPYTHON
+            	cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM\" && \
+            echo \"Windows: Envs are cpython=$Env:LMDB_FORCE_CPYTHON
+            	cffi=$Env:LMDB_FORCE_CFFI pure=$Env:LMDB_PURE system=$Env:LMDB_FORCE_SYSTEM\" && \
             python -m pip install wheel && \
             python -m pip install cffi && \
             python -m pip install flake8 pytest patch-ng && \
