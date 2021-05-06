@@ -173,7 +173,7 @@ jobs:
       run: |
             docker run --rm -v ${{ github.workspace }}:/ws:rw --workdir=/ws \
             ${{ env.img }} \
-            bash -exc '${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
+            bash -exc "${{ env.py }} -m pip install virtualenv && ${{ env.py }} -m venv .env && \
             source .env/bin/activate && \
             yum install -y libffi-devel && \
             if [[ ${{ matrix.impl }} == cpython ]] ; then
@@ -202,11 +202,11 @@ jobs:
             fi && \
             if [[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' ]] ; then
               echo "###########################################################";
-              #python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
-              python -c \"import lmdb; print(lmdb.__version__, end="")\" > vers.txt;
+              python -c 'import lmdb; print(lmdb.__version__, end="")' > vers.txt
+              #python -c \"import lmdb; print(lmdb.__version__, end="")\" > vers.txt;
             fi && \
             uname -m && \
-            deactivate'
+            deactivate"
     - name: Save wheel
       uses: actions/upload-artifact@v2
       with:
