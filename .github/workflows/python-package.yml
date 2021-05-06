@@ -185,11 +185,11 @@ jobs:
               .venv/bin/pip install flake8 pytest patch-ng;
               /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python setup.py develop sdist bdist_wheel;
               ls dist;
-              if [[ matrix.python-version != '3.4' && matrix.python-version != '3.6' && matrix.python-version != '3.8' ]] ; then
+              if \[ matrix.python-version != '3.4' && matrix.python-version != '3.6' && matrix.python-version != '3.8' \] ; then
                 echo "Envs are cpython=$LMDB_FORCE_CPYTHON cffi=$LMDB_FORCE_CFFI pure=$LMDB_PURE system=$LMDB_FORCE_SYSTEM";
                 pytest;
               fi;
-              if [[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' ]] ; then
+              if \[ matrix.pyver == 'cp39-cp39' && runner.os == 'Linux' && matrix.purity == 'with-pylmdb-mods' && matrix.impl == 'cpython' \] ; then
                 /opt/python/${{ matrix.PYTHON.VERSION }}/bin/python -c \"import lmdb; print(lmdb.__version__, end="")' > vers.txt\";
               fi;"
       - run: sudo mv dist/lmdb-*.whl vers.txt
